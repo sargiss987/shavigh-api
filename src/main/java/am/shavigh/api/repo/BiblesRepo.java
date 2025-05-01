@@ -14,6 +14,7 @@ public interface BiblesRepo extends JpaRepository<Bibles, Long> {
             INNER JOIN bible_books bb on bb.bible_id=b.id
             INNER JOIN bible_translations bt on bb.translation_id=bt.id
             INNER JOIN bible_book_chapters bc on bc.bible_book_id=bb.id
+            WHERE bt.name <> 'ru'
             """, nativeQuery = true)
     List<BibleFlatDto> getBibleDtoList();
 }
