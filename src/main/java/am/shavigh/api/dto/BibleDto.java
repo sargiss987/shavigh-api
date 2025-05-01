@@ -6,10 +6,12 @@ import java.util.List;
 public class BibleDto {
 
     private String name;
+    private String uniqueName;
     private List<BibleBookDto> books = new ArrayList<>();
 
-    public BibleDto(String name) {
+    public BibleDto(String name, String uniqueName) {
         this.name = name;
+        this.uniqueName = uniqueName;
     }
 
     public String getName() {
@@ -26,5 +28,13 @@ public class BibleDto {
 
     public void setBooks(List<BibleBookDto> books) {
         this.books = books;
+    }
+
+    public String getUniqueName() {
+        return uniqueName;
+    }
+
+    public void setUniqueName(String uniqueName) {
+        this.uniqueName = uniqueName;
     }
 }

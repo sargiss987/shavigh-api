@@ -29,7 +29,8 @@ public class BiblesService {
         var bibleMap = new LinkedHashMap<String, BibleDto>();
 
         for (BibleFlatDto flat : flatList) {
-            var bible = bibleMap.computeIfAbsent(flat.bibleName(), BibleDto::new);
+            var bible = bibleMap.computeIfAbsent(flat.bibleName(),
+                    name -> new BibleDto(name, flat.bibleUniqueName()));
 
             var book = findOrCreateBook(bible, flat);
             book.getChapters().add(new BibleBookChapterDto(flat.chapterTitle(), flat.chapterUrl()));
