@@ -1,4 +1,4 @@
-package am.shavigh.api.dto;
+package am.shavigh.api.dto.bibles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,8 @@ public class BibleDto {
         this.name = name;
         this.uniqueName = uniqueName;
     }
+
+    public BibleDto() {}
 
     public String getName() {
         return name;

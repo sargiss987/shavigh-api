@@ -1,4 +1,4 @@
-package am.shavigh.api.dto;
+package am.shavigh.api.dto.bibles;
 
 public class BibleBookChapterDto {
     private String title;
@@ -8,6 +8,8 @@ public class BibleBookChapterDto {
         this.title = title;
         this.url = url;
     }
+
+    public BibleBookChapterDto() {}
 
     public String getTitle() {
         return title;

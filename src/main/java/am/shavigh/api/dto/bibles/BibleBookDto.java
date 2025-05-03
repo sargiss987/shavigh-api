@@ -1,4 +1,4 @@
-package am.shavigh.api.dto;
+package am.shavigh.api.dto.bibles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,8 @@ public class BibleBookDto {
         this.serialNumber = serialNumber;
         this.translationName = translationName;
     }
+
+    public BibleBookDto() {}
 
     public String getTitle() {
         return title;

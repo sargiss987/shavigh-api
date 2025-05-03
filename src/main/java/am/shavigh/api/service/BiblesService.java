@@ -1,9 +1,9 @@
 package am.shavigh.api.service;
 
-import am.shavigh.api.dto.BibleBookChapterDto;
-import am.shavigh.api.dto.BibleBookDto;
-import am.shavigh.api.dto.BibleDto;
-import am.shavigh.api.dto.BibleFlatDto;
+import am.shavigh.api.dto.bibles.BibleBookChapterDto;
+import am.shavigh.api.dto.bibles.BibleBookDto;
+import am.shavigh.api.dto.bibles.BibleDto;
+import am.shavigh.api.dto.bibles.BibleFlatDto;
 import am.shavigh.api.repo.BiblesRepo;
 import org.springframework.stereotype.Service;
 
@@ -77,5 +77,9 @@ public class BiblesService {
             bible.getBooks().sort(bookComparator);
             bible.getBooks().forEach(book -> book.getChapters().sort(chapterComparator));
         }
+    }
+
+    public am.shavigh.api.dto.chapters.BibleBookChapterDto getBiblesChapterByUrl(String url) {
+        return biblesRepo.findByUrl(url);
     }
 }

@@ -1,4 +1,4 @@
-package am.shavigh.api.dto;
+package am.shavigh.api.dto.bibles;
 
 public record BibleFlatDto(
         String bibleName,
