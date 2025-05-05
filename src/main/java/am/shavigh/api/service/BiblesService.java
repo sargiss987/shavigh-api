@@ -63,14 +63,19 @@ public class BiblesService {
                     default -> 99;
                 });
 
-        Comparator<BibleBookChapterDto> chapterComparator = Comparator.comparingInt(ch -> {
+        Comparator<BibleBookChapterDto> chapterComparator = Comparator.comparingInt((BibleBookChapterDto ch) -> {
             String title = ch.getTitle();
             if ("Ներածութիւն".equals(title)) return 0;
+
             try {
-                return Integer.parseInt(title);
+                String numericPart = title.replaceAll("[^0-9]", "");
+                return Integer.parseInt(numericPart);
             } catch (NumberFormatException e) {
                 return 9999;
             }
+        }).thenComparing(ch -> {
+            String title = ch.getTitle();
+            return title.matches("^\\d+[Ա-Ֆա-ֆ]+$") ? title : "";
         });
 
         for (BibleDto bible : bibleMap.values()) {
