@@ -4,6 +4,7 @@ import am.shavigh.api.dto.bibles.BibleBookChapterDto;
 import am.shavigh.api.dto.bibles.BibleBookDto;
 import am.shavigh.api.dto.bibles.BibleDto;
 import am.shavigh.api.dto.bibles.BibleFlatDto;
+import am.shavigh.api.dto.pages.BibleBookChapterPageDto;
 import am.shavigh.api.repo.BiblesRepo;
 import org.springframework.stereotype.Service;
 
@@ -86,5 +87,9 @@ public class BiblesService {
 
     public am.shavigh.api.dto.chapters.BibleBookChapterDto getBiblesChapterByUrl(String url) {
         return biblesRepo.findByUrl(url);
+    }
+
+    public BibleBookChapterPageDto getBiblesChapterPagesByUrl(String url) {
+        return biblesRepo.findPageByUrl(url);
     }
 }
