@@ -7,13 +7,15 @@ public class BibleBookChapterPageDto {
     private String url;
     private String nextLink;
     private String prevLink;
+    private String status;
 
-    public BibleBookChapterPageDto(String title, String content, String url, String nextLink, String prevLink) {
+    public BibleBookChapterPageDto(String title, String content, String url, String nextLink, String prevLink, String status) {
         this.title = title;
         this.content = content;
         this.url = url;
         this.nextLink = nextLink;
         this.prevLink = prevLink;
+        this.status = status;
     }
 
     public BibleBookChapterPageDto() {}
@@ -56,5 +58,13 @@ public class BibleBookChapterPageDto {
 
     public void setPrevLink(String prevLink) {
         this.prevLink = prevLink;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

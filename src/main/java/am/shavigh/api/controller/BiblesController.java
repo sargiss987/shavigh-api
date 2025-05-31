@@ -2,12 +2,11 @@ package am.shavigh.api.controller;
 
 import am.shavigh.api.dto.bibles.BibleDto;
 import am.shavigh.api.dto.chapters.BibleBookChapterDto;
+import am.shavigh.api.dto.chapters.CreateBibleBookChapterDto;
 import am.shavigh.api.dto.pages.BibleBookChapterPageDto;
 import am.shavigh.api.service.BiblesService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,6 +23,11 @@ public class BiblesController {
     @GetMapping("/bibles")
     public ResponseEntity<List<BibleDto>> getBibles() {
         return ResponseEntity.ok(biblesService.getBibleDtoList());
+    }
+
+    @PostMapping("/bibles/chapters")
+    public ResponseEntity<BibleBookChapterDto> createBiblesChapter(@RequestBody CreateBibleBookChapterDto createBibleBookChapterDto) {
+        return ResponseEntity.ok(biblesService.createBiblesChapter(createBibleBookChapterDto));
     }
 
     @GetMapping("/bibles/chapters")

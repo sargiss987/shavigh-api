@@ -13,7 +13,7 @@ import java.util.List;
 public interface BiblesRepo extends JpaRepository<Bibles, Long> {
 
     @Query(value = """
-            SELECT b.name, b.unique_name, bb.title, bb.serial_number, bt.name, bc.title, bc.url  FROM bibles b
+            SELECT b.name, b.unique_name, bb.id, bb.title, bb.serial_number, bt.name, bc.title, bc.url  FROM bibles b
             INNER JOIN bible_books bb on bb.bible_id=b.id
             INNER JOIN bible_translations bt on bb.translation_id=bt.id
             INNER JOIN bible_book_chapters bc on bc.bible_book_id=bb.id
@@ -23,12 +23,13 @@ public interface BiblesRepo extends JpaRepository<Bibles, Long> {
 
     @Query("""
                 SELECT new am.shavigh.api.dto.chapters.BibleBookChapterDto(
+                    bc.id,
                     bc.title,
                     bc.content,
                     bc.url,
-                    bc.linkToDefaultContent,
                     bc.nextLink,
-                    bc.prevLink
+                    bc.prevLink,
+                    bc.status
                 )
                 FROM BibleBookChapters bc
                 WHERE bc.url = :url
@@ -41,7 +42,8 @@ public interface BiblesRepo extends JpaRepository<Bibles, Long> {
                     bcp.content,
                     bcp.url,
                     bcp.nextLink,
-                    bcp.prevLink
+                    bcp.prevLink,
+                    bcp.status
                 )
                 FROM BibleBookChapterPages bcp
                 WHERE bcp.url = :url

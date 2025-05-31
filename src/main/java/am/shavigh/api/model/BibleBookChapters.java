@@ -26,6 +26,7 @@ public class BibleBookChapters implements Serializable {
 
     private String nextLink;
     private String prevLink;
+    private String status;
 
     private boolean unexpectedLink;
 
@@ -138,5 +139,13 @@ public class BibleBookChapters implements Serializable {
 
     public void setBibleBooks(BibleBooks bibleBooks) {
         this.bibleBooks = bibleBooks;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

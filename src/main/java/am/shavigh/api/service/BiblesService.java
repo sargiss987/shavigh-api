@@ -4,7 +4,11 @@ import am.shavigh.api.dto.bibles.BibleBookChapterDto;
 import am.shavigh.api.dto.bibles.BibleBookDto;
 import am.shavigh.api.dto.bibles.BibleDto;
 import am.shavigh.api.dto.bibles.BibleFlatDto;
+import am.shavigh.api.dto.chapters.CreateBibleBookChapterDto;
 import am.shavigh.api.dto.pages.BibleBookChapterPageDto;
+import am.shavigh.api.model.BibleBookChapters;
+import am.shavigh.api.repo.BiblesBookChapterRepo;
+import am.shavigh.api.repo.BiblesBookRepo;
 import am.shavigh.api.repo.BiblesRepo;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +18,13 @@ import java.util.*;
 public class BiblesService {
 
     private final BiblesRepo biblesRepo;
+    private final BiblesBookChapterRepo biblesBookChapterRepo;
+    private final BiblesBookRepo biblesBookRepo;
 
-    public BiblesService(BiblesRepo biblesRepo) {
+    public BiblesService(BiblesRepo biblesRepo, BiblesBookChapterRepo biblesBookChapterRepo, BiblesBookRepo biblesBookRepo) {
         this.biblesRepo = biblesRepo;
+        this.biblesBookChapterRepo = biblesBookChapterRepo;
+        this.biblesBookRepo = biblesBookRepo;
     }
 
     public List<BibleDto> getBibleDtoList() {
@@ -47,7 +55,7 @@ public class BiblesService {
                         b.getTranslationName().equals(flat.translationName()))
                 .findFirst()
                 .orElseGet(() -> {
-                    var newBook = new BibleBookDto(flat.bookTitle(), flat.serialNumber(), flat.translationName());
+                    var newBook = new BibleBookDto(flat.bookId(), flat.bookTitle(), flat.serialNumber(), flat.translationName());
                     bible.getBooks().add(newBook);
                     return newBook;
                 });
@@ -92,4 +100,34 @@ public class BiblesService {
     public BibleBookChapterPageDto getBiblesChapterPagesByUrl(String url) {
         return biblesRepo.findPageByUrl(url);
     }
+
+    public am.shavigh.api.dto.chapters.BibleBookChapterDto createBiblesChapter(CreateBibleBookChapterDto createDto) {
+        System.out.println("Creating Bible book chapter with DTO: " + createDto);
+        return biblesBookRepo.findById(createDto.getBookId())
+                .map(bibleBook -> {
+                    var chapter = new BibleBookChapters();
+                    chapter.setBibleBooks(bibleBook);
+                    chapter.setTitle(createDto.getTitle());
+                    chapter.setContent(createDto.getContent());
+                    chapter.setUrl(createDto.getUrl());
+                    chapter.setNextLink(createDto.getNextLink());
+                    chapter.setPrevLink(createDto.getPrevLink());
+                    chapter.setStatus("draft");
+
+                    var savedChapter = biblesBookChapterRepo.save(chapter);
+
+                    return new am.shavigh.api.dto.chapters.BibleBookChapterDto(
+                            savedChapter.getId(),
+                            savedChapter.getTitle(),
+                            savedChapter.getContent(),
+                            savedChapter.getUrl(),
+                            savedChapter.getNextLink(),
+                            savedChapter.getPrevLink(),
+                            savedChapter.getStatus()
+                    );
+                })
+                .orElseThrow(() -> new NoSuchElementException("Bible book not found with ID: " + createDto.getBookId()));
+    }
+
+
 }

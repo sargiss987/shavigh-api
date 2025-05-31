@@ -5,12 +5,14 @@ import java.util.List;
 
 public class BibleBookDto {
 
+    private int id;
     private String title;
     private int serialNumber;
     private String translationName;
     private List<BibleBookChapterDto> chapters = new ArrayList<>();
 
-    public BibleBookDto(String title, int serialNumber, String translationName) {
+    public BibleBookDto(int id, String title, int serialNumber, String translationName) {
+        this.id = id;
         this.title = title;
         this.serialNumber = serialNumber;
         this.translationName = translationName;
@@ -48,5 +50,13 @@ public class BibleBookDto {
 
     public void setChapters(List<BibleBookChapterDto> chapters) {
         this.chapters = chapters;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

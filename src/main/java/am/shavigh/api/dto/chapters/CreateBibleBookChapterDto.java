@@ -1,35 +1,24 @@
 package am.shavigh.api.dto.chapters;
 
-public class BibleBookChapterDto {
+public class CreateBibleBookChapterDto {
 
-    private Long id;
     private String title;
     private String content;
     private String url;
     private String nextLink;
     private String prevLink;
-    private String status;
+    private int bookId;
 
-    public BibleBookChapterDto(Long id, String title, String content, String url, String nextLink, String prevLink, String status) {
-        this.id = id;
+    public CreateBibleBookChapterDto(String title, String content, String url, String nextLink, String prevLink, int bookId) {
         this.title = title;
         this.content = content;
         this.url = url;
         this.nextLink = nextLink;
         this.prevLink = prevLink;
-        this.status = status;
+        this.bookId = bookId;
     }
 
-    public BibleBookChapterDto() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public CreateBibleBookChapterDto() {}
 
     public String getTitle() {
         return title;
@@ -71,11 +60,11 @@ public class BibleBookChapterDto {
         this.prevLink = prevLink;
     }
 
-    public String getStatus() {
-        return status;
+    public int getBookId() {
+        return bookId;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
     }
 }
