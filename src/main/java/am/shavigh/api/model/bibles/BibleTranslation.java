@@ -1,4 +1,4 @@
-package am.shavigh.api.model;
+package am.shavigh.api.model.bibles;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

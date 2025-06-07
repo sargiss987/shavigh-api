@@ -6,7 +6,7 @@ import am.shavigh.api.dto.bibles.BibleDto;
 import am.shavigh.api.dto.bibles.BibleFlatDto;
 import am.shavigh.api.dto.chapters.CreateBibleBookChapterDto;
 import am.shavigh.api.dto.pages.BibleBookChapterPageDto;
-import am.shavigh.api.model.BibleBookChapters;
+import am.shavigh.api.model.bibles.BibleBookChapters;
 import am.shavigh.api.repo.BiblesBookChapterRepo;
 import am.shavigh.api.repo.BiblesBookRepo;
 import am.shavigh.api.repo.BiblesRepo;

@@ -3,7 +3,7 @@ package am.shavigh.api.repo;
 import am.shavigh.api.dto.bibles.BibleFlatDto;
 import am.shavigh.api.dto.chapters.BibleBookChapterDto;
 import am.shavigh.api.dto.pages.BibleBookChapterPageDto;
-import am.shavigh.api.model.Bibles;
+import am.shavigh.api.model.bibles.Bibles;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
