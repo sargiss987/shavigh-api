@@ -23,7 +23,7 @@ public class StaticPagesService {
     public StaticPageDto findByUniqueName(String uniqueName, String status) {
         var page = staticPagesRepo.findByUniqueNameAndStatus(uniqueName, status);
         if (page == null) {
-            return null;
+            throw new ApiException("Static page not found", HttpStatus.NOT_FOUND);
         }
         return new StaticPageDto(page.getId(), page.getUniqueName(), page.getStatus(), page.getContent(), page.getOriginId());
     }
@@ -41,13 +41,6 @@ public class StaticPagesService {
 
         return new StaticPageDto(savedStaticPage.getId(), staticPageUpdateDto.getUniqueName(),
                 savedStaticPage.getStatus(), savedStaticPage.getContent(), savedStaticPage.getOriginId());
-    }
-
-    public StaticPageDto createStaticPage(StaticPageCreateDto staticPageCreateDto) {
-        var page = new StaticPage(staticPageCreateDto.getUniqueName(), "draft", staticPageCreateDto.getContent());
-        var savedPage = staticPagesRepo.save(page);
-        return new StaticPageDto(savedPage.getId(), savedPage.getUniqueName(), savedPage.getStatus(),
-                savedPage.getContent(), savedPage.getOriginId());
     }
 
     @Transactional

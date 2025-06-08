@@ -18,20 +18,15 @@ public class StaticPagesController {
     }
 
     @GetMapping("/static-pages/{uniqueName}")
-    public ResponseEntity<StaticPageDto> getStaticPageByUniqueName(@PathVariable("uniqueName") String uniqueName) {
-        return ResponseEntity.ok(staticPagesService.findByUniqueName(uniqueName, "publish"));
+    public ResponseEntity<StaticPageDto> getStaticPageByUniqueName(@PathVariable("uniqueName") String uniqueName,
+                                                                   @RequestParam(value = "status", defaultValue = "publish") String status) {
+        return ResponseEntity.ok(staticPagesService.findByUniqueName(uniqueName, status));
     }
 
     @PutMapping("/static-pages")
     public ResponseEntity<StaticPageDto> updateStaticPage(
             @RequestBody StaticPageUpdateDto staticPageUpdateDto) {
         return ResponseEntity.ok(staticPagesService.updateStaticPage(staticPageUpdateDto));
-    }
-
-    @PostMapping("/static-pages")
-    public ResponseEntity<StaticPageDto> createStaticPage(
-            @RequestBody StaticPageCreateDto staticPageCreateDto) {
-        return ResponseEntity.ok(staticPagesService.createStaticPage(staticPageCreateDto));
     }
 
     @PutMapping("/static-pages/publish")
