@@ -30,6 +30,8 @@ public class BibleBookChapters implements Serializable {
 
     private boolean unexpectedLink;
 
+    private Long originId;
+
     public boolean isUnexpectedLink() {
         return unexpectedLink;
     }
@@ -147,5 +149,13 @@ public class BibleBookChapters implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Long getOriginId() {
+        return originId;
+    }
+
+    public void setOriginId(Long originId) {
+        this.originId = originId;
     }
 }

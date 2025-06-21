@@ -2,6 +2,7 @@ package am.shavigh.api.dto.pages;
 
 public class BibleBookChapterPageDto {
 
+    private Long id;
     private String title;
     private String content;
     private String url;
@@ -9,13 +10,14 @@ public class BibleBookChapterPageDto {
     private String prevLink;
     private String status;
 
-    public BibleBookChapterPageDto(String title, String content, String url, String nextLink, String prevLink, String status) {
+    public BibleBookChapterPageDto(Long id,String title, String content, String url, String nextLink, String prevLink, String status) {
         this.title = title;
         this.content = content;
         this.url = url;
         this.nextLink = nextLink;
         this.prevLink = prevLink;
         this.status = status;
+        this.id = id;
     }
 
     public BibleBookChapterPageDto() {}
@@ -66,5 +68,13 @@ public class BibleBookChapterPageDto {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

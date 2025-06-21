@@ -2,23 +2,43 @@ package am.shavigh.api.dto.chapters;
 
 public class CreateBibleBookChapterDto {
 
+    private Long id;
+    private Long originId;
     private String title;
     private String content;
     private String url;
     private String nextLink;
     private String prevLink;
-    private int bookId;
+    private int bibleBookId;
 
-    public CreateBibleBookChapterDto(String title, String content, String url, String nextLink, String prevLink, int bookId) {
+    public CreateBibleBookChapterDto(Long id,Long originId, String title, String content, String url, String nextLink, String prevLink, int bibleBookId) {
+        this.id = id;
+        this.originId = originId;
         this.title = title;
         this.content = content;
         this.url = url;
         this.nextLink = nextLink;
         this.prevLink = prevLink;
-        this.bookId = bookId;
+        this.bibleBookId = bibleBookId;
     }
 
     public CreateBibleBookChapterDto() {}
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getOriginId() {
+        return originId;
+    }
+
+    public void setOriginId(Long originId) {
+        this.originId = originId;
+    }
 
     public String getTitle() {
         return title;
@@ -60,11 +80,25 @@ public class CreateBibleBookChapterDto {
         this.prevLink = prevLink;
     }
 
-    public int getBookId() {
-        return bookId;
+    public int getBibleBookId() {
+        return bibleBookId;
     }
 
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
+    public void setBibleBookId(int bibleBookId) {
+        this.bibleBookId = bibleBookId;
+    }
+
+    @Override
+    public String toString() {
+        return "CreateBibleBookChapterDto{" +
+                "id=" + id +
+                ", originId=" + originId +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", url='" + url + '\'' +
+                ", nextLink='" + nextLink + '\'' +
+                ", prevLink='" + prevLink + '\'' +
+                ", bibleBookId=" + bibleBookId +
+                '}';
     }
 }

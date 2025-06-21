@@ -2,6 +2,7 @@ package am.shavigh.api.controller;
 
 import am.shavigh.api.dto.bibles.BibleDto;
 import am.shavigh.api.dto.chapters.BibleBookChapterDto;
+import am.shavigh.api.dto.chapters.BiblesChapterPublishDto;
 import am.shavigh.api.dto.chapters.CreateBibleBookChapterDto;
 import am.shavigh.api.dto.pages.BibleBookChapterPageDto;
 import am.shavigh.api.service.BiblesService;
@@ -30,9 +31,21 @@ public class BiblesController {
         return ResponseEntity.ok(biblesService.createBiblesChapter(createBibleBookChapterDto));
     }
 
+    @PutMapping("/bibles/chapters/publish")
+    public ResponseEntity<Void> publishBiblesChapter(@RequestBody BiblesChapterPublishDto biblesChapterPublishDto) {
+        biblesService.publishBiblesChapter(biblesChapterPublishDto);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/bibles/chapters")
-    public ResponseEntity<BibleBookChapterDto> getBiblesChapterByUrl(@RequestParam("url") String url) {
-        return ResponseEntity.ok(biblesService.getBiblesChapterByUrl(url));
+    public ResponseEntity<BibleBookChapterDto> getBiblesChapterByUrl(@RequestParam("url") String url,
+                                                                     @RequestParam(value = "status", defaultValue = "publish") String status) {
+        return ResponseEntity.ok(biblesService.getBiblesChapterByUrl(url, status));
+    }
+
+    @GetMapping("/bibles/chapters/draft")
+    public ResponseEntity<List<BibleBookChapterDto>> getDraftBiblesChapters() {
+        return ResponseEntity.ok(biblesService.findByStatusIsDraft("draft"));
     }
 
     @GetMapping("/bibles/chapters/pages")

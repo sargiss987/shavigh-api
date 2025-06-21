@@ -9,8 +9,10 @@ public class BibleBookChapterDto {
     private String nextLink;
     private String prevLink;
     private String status;
+    private Long originId;
+    private Long bibleBookId;
 
-    public BibleBookChapterDto(Long id, String title, String content, String url, String nextLink, String prevLink, String status) {
+    public BibleBookChapterDto(Long id, String title, String content, String url, String nextLink, String prevLink, String status, Long originId, Long bibleBookId) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -18,6 +20,8 @@ public class BibleBookChapterDto {
         this.nextLink = nextLink;
         this.prevLink = prevLink;
         this.status = status;
+        this.originId = originId;
+        this.bibleBookId = bibleBookId;
     }
 
     public BibleBookChapterDto() {
@@ -77,5 +81,21 @@ public class BibleBookChapterDto {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Long getOriginId() {
+        return originId;
+    }
+
+    public void setOriginId(Long originId) {
+        this.originId = originId;
+    }
+
+    public Long getBibleBookId() {
+        return bibleBookId;
+    }
+
+    public void setBibleBookId(Long bibleBookId) {
+        this.bibleBookId = bibleBookId;
     }
 }

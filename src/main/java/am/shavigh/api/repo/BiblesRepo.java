@@ -3,6 +3,7 @@ package am.shavigh.api.repo;
 import am.shavigh.api.dto.bibles.BibleFlatDto;
 import am.shavigh.api.dto.chapters.BibleBookChapterDto;
 import am.shavigh.api.dto.pages.BibleBookChapterPageDto;
+import am.shavigh.api.model.bibles.BibleBookChapters;
 import am.shavigh.api.model.bibles.Bibles;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +18,7 @@ public interface BiblesRepo extends JpaRepository<Bibles, Long> {
             INNER JOIN bible_books bb on bb.bible_id=b.id
             INNER JOIN bible_translations bt on bb.translation_id=bt.id
             INNER JOIN bible_book_chapters bc on bc.bible_book_id=bb.id
-            WHERE bt.name <> 'ru'
+            WHERE bt.name <> 'ru' AND bc.status = 'publish'
             """, nativeQuery = true)
     List<BibleFlatDto> getBibleDtoList();
 
@@ -29,15 +30,18 @@ public interface BiblesRepo extends JpaRepository<Bibles, Long> {
                     bc.url,
                     bc.nextLink,
                     bc.prevLink,
-                    bc.status
+                    bc.status,
+                    bc.originId,
+                    bc.bibleBooks.id
                 )
                 FROM BibleBookChapters bc
-                WHERE bc.url = :url
+                WHERE bc.url = :url AND bc.status = :status
             """)
-    BibleBookChapterDto findByUrl(@Param("url") String url);
+    BibleBookChapterDto findByUrl(@Param("url") String url, @Param("status") String status);
 
     @Query("""
                 SELECT new am.shavigh.api.dto.pages.BibleBookChapterPageDto(
+                    bcp.id,
                     bcp.title,
                     bcp.content,
                     bcp.url,

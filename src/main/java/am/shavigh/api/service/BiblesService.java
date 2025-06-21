@@ -4,12 +4,16 @@ import am.shavigh.api.dto.bibles.BibleBookChapterDto;
 import am.shavigh.api.dto.bibles.BibleBookDto;
 import am.shavigh.api.dto.bibles.BibleDto;
 import am.shavigh.api.dto.bibles.BibleFlatDto;
+import am.shavigh.api.dto.chapters.BiblesChapterPublishDto;
 import am.shavigh.api.dto.chapters.CreateBibleBookChapterDto;
 import am.shavigh.api.dto.pages.BibleBookChapterPageDto;
+import am.shavigh.api.exceptions.ApiException;
 import am.shavigh.api.model.bibles.BibleBookChapters;
 import am.shavigh.api.repo.BiblesBookChapterRepo;
 import am.shavigh.api.repo.BiblesBookRepo;
 import am.shavigh.api.repo.BiblesRepo;
+import jakarta.transaction.Transactional;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -93,8 +97,13 @@ public class BiblesService {
         }
     }
 
-    public am.shavigh.api.dto.chapters.BibleBookChapterDto getBiblesChapterByUrl(String url) {
-        return biblesRepo.findByUrl(url);
+    public am.shavigh.api.dto.chapters.BibleBookChapterDto getBiblesChapterByUrl(String url, String status) {
+        var response =  biblesRepo.findByUrl(url, status);
+        if (response == null) {
+            throw new ApiException("Bible chapter not found with URL: " + url, HttpStatus.NOT_FOUND);
+        }
+
+        return response;
     }
 
     public BibleBookChapterPageDto getBiblesChapterPagesByUrl(String url) {
@@ -102,10 +111,14 @@ public class BiblesService {
     }
 
     public am.shavigh.api.dto.chapters.BibleBookChapterDto createBiblesChapter(CreateBibleBookChapterDto createDto) {
-        System.out.println("Creating Bible book chapter with DTO: " + createDto);
-        return biblesBookRepo.findById(createDto.getBookId())
+        System.out.println(createDto);
+        return biblesBookRepo.findById(createDto.getBibleBookId())
                 .map(bibleBook -> {
                     var chapter = new BibleBookChapters();
+                    if (createDto.getId() != null) {
+                        chapter.setId(createDto.getId());
+                    }
+                    chapter.setOriginId(createDto.getOriginId());
                     chapter.setBibleBooks(bibleBook);
                     chapter.setTitle(createDto.getTitle());
                     chapter.setContent(createDto.getContent());
@@ -123,11 +136,60 @@ public class BiblesService {
                             savedChapter.getUrl(),
                             savedChapter.getNextLink(),
                             savedChapter.getPrevLink(),
-                            savedChapter.getStatus()
+                            savedChapter.getStatus(),
+                            savedChapter.getOriginId(),
+                            savedChapter.getBibleBooks().getId()
                     );
                 })
-                .orElseThrow(() -> new NoSuchElementException("Bible book not found with ID: " + createDto.getBookId()));
+                .orElseThrow(() -> new NoSuchElementException("Bible book not found with ID: " + createDto.getBibleBookId()));
     }
 
+    @Transactional
+    public void publishBiblesChapter(BiblesChapterPublishDto biblesChapterPublishDto) {
+        System.out.println("Publishing chapter: " + biblesChapterPublishDto);
+        biblesBookChapterRepo.findById(biblesChapterPublishDto.getId())
+                .ifPresentOrElse(chapter -> {
+                    if (biblesChapterPublishDto.getOriginId() == null) {
+                        // No origin -> publish current chapter
+                        chapter.setStatus("publish");
+                        biblesBookChapterRepo.save(chapter);
+                    } else {
+                        // Has origin -> update original and remove draft
+                        biblesBookChapterRepo.findById(biblesChapterPublishDto.getOriginId())
+                                .ifPresentOrElse(original -> {
+                                    // Update original with data from draft
+                                    original.setStatus("publish");
+                                    original.setTitle(chapter.getTitle());
+                                    original.setContent(chapter.getContent());
+                                    original.setUrl(chapter.getUrl());
+                                    original.setNextLink(chapter.getNextLink());
+                                    original.setPrevLink(chapter.getPrevLink());
+                                    biblesBookChapterRepo.save(original);
 
+                                    // Delete the draft chapter
+                                    biblesBookChapterRepo.delete(chapter);
+                                }, () -> {
+                                    throw new NoSuchElementException("Original Bible chapter not found with ID: " + biblesChapterPublishDto.getOriginId());
+                                });
+                    }
+                }, () -> {
+                    throw new NoSuchElementException("Bible chapter not found with ID: " + biblesChapterPublishDto.getId());
+                });
+    }
+
+    public List<am.shavigh.api.dto.chapters.BibleBookChapterDto> findByStatusIsDraft(String status) {
+        return biblesBookChapterRepo.findByStatus(status)
+                .stream()
+                .map(chapter -> new am.shavigh.api.dto.chapters.BibleBookChapterDto(
+                        chapter.getId(),
+                        chapter.getTitle(),
+                        chapter.getContent(),
+                        chapter.getUrl(),
+                        chapter.getNextLink(),
+                        chapter.getPrevLink(),
+                        chapter.getStatus(),
+                        chapter.getOriginId(),
+                        chapter.getBibleBooks().getId()))
+                .toList();
+    }
 }
