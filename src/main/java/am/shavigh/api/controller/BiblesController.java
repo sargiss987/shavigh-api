@@ -5,6 +5,7 @@ import am.shavigh.api.dto.chapters.BibleBookChapterDto;
 import am.shavigh.api.dto.chapters.BiblesChapterPublishDto;
 import am.shavigh.api.dto.chapters.CreateBibleBookChapterDto;
 import am.shavigh.api.dto.pages.BibleBookChapterPageDto;
+import am.shavigh.api.dto.pages.CreateBibleBookChapterPageDto;
 import am.shavigh.api.service.BiblesService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class BiblesController {
     }
 
     @PostMapping("/bibles/chapters")
-    public ResponseEntity<BibleBookChapterDto> createBiblesChapter(@RequestBody CreateBibleBookChapterDto createBibleBookChapterDto) {
+    public ResponseEntity<BibleBookChapterDto> createOrUpdateBiblesChapter(@RequestBody CreateBibleBookChapterDto createBibleBookChapterDto) {
         return ResponseEntity.ok(biblesService.createBiblesChapter(createBibleBookChapterDto));
     }
 
@@ -49,7 +50,24 @@ public class BiblesController {
     }
 
     @GetMapping("/bibles/chapters/pages")
-    public ResponseEntity<BibleBookChapterPageDto> getBiblesChapterPagesByUrl(@RequestParam("url") String url) {
-        return ResponseEntity.ok(biblesService.getBiblesChapterPagesByUrl(url));
+    public ResponseEntity<BibleBookChapterPageDto> getBiblesChapterPagesByUrl(@RequestParam("url") String url,
+                                                                              @RequestParam(value = "status", defaultValue = "publish")String status) {
+        return ResponseEntity.ok(biblesService.getBiblesChapterPagesByUrl(url, status));
+    }
+
+    @PostMapping("/bibles/chapters/pages")
+    public ResponseEntity<BibleBookChapterPageDto> createOrUpdateBiblesChapterPage(@RequestBody CreateBibleBookChapterPageDto createBibleBookChapterPageDto) {
+        return ResponseEntity.ok(biblesService.createOrUpdateBiblesChapterPage(createBibleBookChapterPageDto));
+    }
+
+    @PutMapping("/bibles/chapters/pages/publish")
+    public ResponseEntity<Void> publishBiblesChapterPage(@RequestBody BiblesChapterPublishDto biblesChapterPublishDto) {
+        biblesService.publishBiblesChapterPage(biblesChapterPublishDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/bibles/chapters/pages/draft")
+    public ResponseEntity<List<BibleBookChapterPageDto>> getDraftBiblesChapterPages() {
+        return ResponseEntity.ok(biblesService.findDraftBiblesChapterPages("draft"));
     }
 }

@@ -19,6 +19,7 @@ public class BibleBookChapterPages implements Serializable {
     private String prevLink;
     private boolean hasNestedLinks;
     private String status;
+    private Long originId;
 
     public String getUrlArmenian() {
         return urlArmenian;
@@ -111,5 +112,13 @@ public class BibleBookChapterPages implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Long getOriginId() {
+        return originId;
+    }
+
+    public void setOriginId(Long originId) {
+        this.originId = originId;
     }
 }

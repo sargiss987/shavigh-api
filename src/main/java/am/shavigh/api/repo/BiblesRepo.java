@@ -3,7 +3,6 @@ package am.shavigh.api.repo;
 import am.shavigh.api.dto.bibles.BibleFlatDto;
 import am.shavigh.api.dto.chapters.BibleBookChapterDto;
 import am.shavigh.api.dto.pages.BibleBookChapterPageDto;
-import am.shavigh.api.model.bibles.BibleBookChapters;
 import am.shavigh.api.model.bibles.Bibles;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -47,10 +46,12 @@ public interface BiblesRepo extends JpaRepository<Bibles, Long> {
                     bcp.url,
                     bcp.nextLink,
                     bcp.prevLink,
-                    bcp.status
+                    bcp.status,
+                    bcp.originId,
+                    bcp.bibleBookChapters.id
                 )
                 FROM BibleBookChapterPages bcp
-                WHERE bcp.url = :url
+                WHERE bcp.url = :url AND bcp.status = :status
             """)
-    BibleBookChapterPageDto findPageByUrl(@Param("url") String url);
+    BibleBookChapterPageDto findPageByUrl(@Param("url") String url, @Param("status") String status);
 }
