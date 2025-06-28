@@ -1,6 +1,7 @@
 package am.shavigh.api.repo;
 
 import am.shavigh.api.dto.saintsbehaviour.SaintsBehaviorFlatDto;
+import am.shavigh.api.dto.saintsbehaviour.SaintsBehaviourSectionFullDto;
 import am.shavigh.api.model.saintsbehavior.SaintsBehavior;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +25,20 @@ public interface SaintsBehaviorRepo extends JpaRepository<SaintsBehavior, Long> 
         INNER JOIN saints_behavior_section sbs ON sbs.saints_behavior_id = sb.id
         """, nativeQuery = true)
     List<SaintsBehaviorFlatDto> getSaintsBehaviorWithSections();
+
+
+    @Query(value = """
+        SELECT new am.shavigh.api.dto.saintsbehaviour.SaintsBehaviourSectionFullDto(
+            sb.id,
+            sb.title,
+            sb.content,
+            sb.url,
+            sb.status,
+            sb.originId,
+            sb.saintsBehavior.id
+        )    
+        FROM SaintsBehaviorSection sb
+        WHERE sb.url = :url AND sb.status = :status
+        """)
+    SaintsBehaviourSectionFullDto findByUrl(String url, String status);
 }

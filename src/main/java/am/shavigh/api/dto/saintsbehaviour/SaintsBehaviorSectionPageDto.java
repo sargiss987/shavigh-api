@@ -1,39 +1,26 @@
-package am.shavigh.api.model.saintsbehavior;
+package am.shavigh.api.dto.saintsbehaviour;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "saints_behavior_section_page")
-public class SaintsBehaviorSectionPage {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class SaintsBehaviorSectionPageDto {
     private Integer id;
-
     private String title;
     private String content;
     private String url;
     private String status = "publish";
     private Long originId;
-
-    @ManyToOne
-    @JoinColumn(name = "saints_behavior_section_id", nullable = false)
-    @JsonBackReference
-    private SaintsBehaviorSection saintsBehaviorSection;
+    private Long sectionId;
 
     // Constructors
-    public SaintsBehaviorSectionPage() {
+    public SaintsBehaviorSectionPageDto() {
     }
 
-    public SaintsBehaviorSectionPage(Integer id, String title, String content, String url, String status, Long originId, SaintsBehaviorSection saintsBehaviorSection) {
+    public SaintsBehaviorSectionPageDto(Integer id, String title, String content, String url, String status, Long originId, Long sectionId) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.url = url;
         this.status = status;
         this.originId = originId;
-        this.saintsBehaviorSection = saintsBehaviorSection;
+        this.sectionId = sectionId;
     }
 
     // Getters and setters
@@ -77,19 +64,19 @@ public class SaintsBehaviorSectionPage {
         this.status = status;
     }
 
-    public SaintsBehaviorSection getSaintsBehaviorSection() {
-        return saintsBehaviorSection;
-    }
-
-    public void setSaintsBehaviorSection(SaintsBehaviorSection saintsBehaviorSection) {
-        this.saintsBehaviorSection = saintsBehaviorSection;
-    }
-
     public Long getOriginId() {
         return originId;
     }
 
     public void setOriginId(Long originId) {
         this.originId = originId;
+    }
+
+    public Long getSectionId() {
+        return sectionId;
+    }
+
+    public void setSectionId(Long sectionId) {
+        this.sectionId = sectionId;
     }
 }

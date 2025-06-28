@@ -1,10 +1,9 @@
 package am.shavigh.api.controller;
 
-import am.shavigh.api.dto.saintsbehaviour.SaintsBehaviourDto;
+import am.shavigh.api.dto.saintsbehaviour.*;
 import am.shavigh.api.service.SaintsBehaviorService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,5 +19,27 @@ public class SaintsBehaviorController {
     @GetMapping("/saints-behavior")
     ResponseEntity<List<SaintsBehaviourDto>> getSaintsBehaviorWithSections(){
         return ResponseEntity.ok(saintsBehaviorService.getSaintsBehaviorWithSections());
+    }
+
+    @GetMapping("/saints-behavior/section")
+    ResponseEntity<SaintsBehaviourSectionFullDto> getSaintsBehaviorSectionByUrl(@RequestParam("url") String url,
+                                                                                @RequestParam(value = "status", defaultValue = "publish") String status){
+        return ResponseEntity.ok(saintsBehaviorService.getSaintsBehaviorSectionByUrl(url, status));
+    }
+
+    @GetMapping("/saints-behavior/section/pages")
+    ResponseEntity<SaintsBehaviorSectionPageDto> getSaintsBehaviorSectionPagesByUrl(@RequestParam("url") String url,
+                                                                                    @RequestParam(value = "status", defaultValue = "publish") String status){
+        return ResponseEntity.ok(saintsBehaviorService.getSaintsBehaviorSectionPageByUrl(url, status));
+    }
+
+    @PostMapping("/saints-behavior/section")
+    ResponseEntity<SaintsBehaviourSectionFullDto> getSaintsBehaviorSectionByUrl(@RequestBody CreateSaintsBehaviourSectionDto createSaintsBehaviourSectionDto) {
+        return ResponseEntity.ok(saintsBehaviorService.createSaintsBehaviorSection(createSaintsBehaviourSectionDto));
+    }
+
+    @PostMapping("/saints-behavior/section/pages")
+    ResponseEntity<SaintsBehaviorSectionPageDto> createSaintsBehaviorSectionPage(@RequestBody CreateBehaviorSectionPageDto createBehaviorSectionPageDto) {
+        return ResponseEntity.ok(saintsBehaviorService.createSaintsBehaviorSectionPage(createBehaviorSectionPageDto));
     }
 }

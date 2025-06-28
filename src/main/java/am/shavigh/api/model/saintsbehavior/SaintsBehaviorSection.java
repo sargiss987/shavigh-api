@@ -23,6 +23,8 @@ public class SaintsBehaviorSection {
 
     private String status = "publish";
 
+    private Long originId;
+
     @ManyToOne
     @JoinColumn(name = "saints_behavior_id", nullable = false)
     @JsonBackReference
@@ -88,5 +90,13 @@ public class SaintsBehaviorSection {
 
     public void setPages(List<SaintsBehaviorSectionPage> pages) {
         this.pages = pages;
+    }
+
+    public Long getOriginId() {
+        return originId;
+    }
+
+    public void setOriginId(Long originId) {
+        this.originId = originId;
     }
 }
