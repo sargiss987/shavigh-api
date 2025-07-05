@@ -9,6 +9,7 @@ import am.shavigh.api.repo.SaintsBehaviorSectionPageRepo;
 import am.shavigh.api.repo.SaintsBehaviourSectionRepo;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -53,7 +54,7 @@ public class SaintsBehaviorService {
     }
 
     public SaintsBehaviourSectionFullDto getSaintsBehaviorSectionByUrl(String url, String status) {
-        var response =  saintsBehaviorRepo.findByUrl(url, status);
+        var response = saintsBehaviorRepo.findByUrl(url, status);
         if (response == null) {
             throw new ApiException("Saints Behaviour not found with URL: " + url, HttpStatus.NOT_FOUND);
         }
@@ -62,7 +63,7 @@ public class SaintsBehaviorService {
     }
 
     public SaintsBehaviorSectionPageDto getSaintsBehaviorSectionPageByUrl(String url, String status) {
-        var response =  saintsBehaviorSectionPageRepo.findByUrl(url, status);
+        var response = saintsBehaviorSectionPageRepo.findByUrl(url, status);
         if (response == null) {
             throw new ApiException("Saints Behaviour Page not found with URL: " + url, HttpStatus.NOT_FOUND);
         }
@@ -130,6 +131,66 @@ public class SaintsBehaviorService {
                     );
                 })
                 .orElseThrow(() -> new NoSuchElementException("Saints behavior section not found with ID: " + createDto.getSaintsBehaviorSectionId()));
+    }
+
+    @Transactional
+    public void publishSaintsBehaviorSection(SaintsBehaviorSectionPublishDto publishDto) {
+        saintsBehaviorSectionRepo.findById(publishDto.getId())
+                .ifPresentOrElse(section -> {
+                    if (publishDto.getOriginId() == null) {
+                        // No origin -> publish current section
+                        section.setStatus("publish");
+                        saintsBehaviorSectionRepo.save(section);
+                    } else {
+                        // Has origin -> update original and remove draft
+                        saintsBehaviorSectionRepo.findById(publishDto.getOriginId())
+                                .ifPresentOrElse(original -> {
+                                    // Update original with data from draft
+                                    original.setStatus("publish");
+                                    original.setTitle(section.getTitle());
+                                    original.setContent(section.getContent());
+                                    original.setUrl(section.getUrl());
+                                    saintsBehaviorSectionRepo.save(original);
+
+                                    // Delete the draft section
+                                    saintsBehaviorSectionRepo.delete(section);
+                                }, () -> {
+                                    throw new NoSuchElementException("Original section not found with ID: " + publishDto.getOriginId());
+                                });
+                    }
+                }, () -> {
+                    throw new NoSuchElementException("Section not found with ID: " + publishDto.getId());
+                });
+    }
+
+    @Transactional
+    public void publishSaintsBehaviorSectionPage(SaintsBehaviorSectionPublishDto publishDto) {
+        saintsBehaviorSectionPageRepo.findById(publishDto.getId())
+                .ifPresentOrElse(page -> {
+                    if (publishDto.getOriginId() == null) {
+                        // No origin -> publish current page
+                        page.setStatus("publish");
+                        saintsBehaviorSectionPageRepo.save(page);
+                    } else {
+                        // Has origin -> update original and remove draft
+                        saintsBehaviorSectionPageRepo.findById(publishDto.getOriginId())
+                                .ifPresentOrElse(original -> {
+                                    // Update original with data from draft
+                                    original.setStatus("publish");
+                                    original.setTitle(page.getTitle());
+                                    original.setContent(page.getContent());
+                                    original.setUrl(page.getUrl());
+                                    saintsBehaviorSectionPageRepo.save(original);
+
+                                    // Delete the draft page
+                                    saintsBehaviorSectionPageRepo.delete(page);
+                                }, () -> {
+                                    throw new NoSuchElementException("Original page not found with ID: " + publishDto.getOriginId());
+                                });
+                    }
+                }, () -> {
+                    throw new NoSuchElementException("Page not found with ID: " + publishDto.getId());
+                });
     }
 
 }

@@ -190,7 +190,6 @@ public class BiblesService {
 
     @Transactional
     public void publishBiblesChapter(BiblesChapterPublishDto biblesChapterPublishDto) {
-        System.out.println("Publishing chapter: " + biblesChapterPublishDto);
         biblesBookChapterRepo.findById(biblesChapterPublishDto.getId())
                 .ifPresentOrElse(chapter -> {
                     if (biblesChapterPublishDto.getOriginId() == null) {

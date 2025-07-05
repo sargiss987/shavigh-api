@@ -38,8 +38,20 @@ public class SaintsBehaviorController {
         return ResponseEntity.ok(saintsBehaviorService.createSaintsBehaviorSection(createSaintsBehaviourSectionDto));
     }
 
+    @PutMapping("/saints-behavior/section/publish")
+    public ResponseEntity<Void> publishSaintsBehaviorSection(@RequestBody SaintsBehaviorSectionPublishDto publishDto) {
+        saintsBehaviorService.publishSaintsBehaviorSection(publishDto);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/saints-behavior/section/pages")
     ResponseEntity<SaintsBehaviorSectionPageDto> createSaintsBehaviorSectionPage(@RequestBody CreateBehaviorSectionPageDto createBehaviorSectionPageDto) {
         return ResponseEntity.ok(saintsBehaviorService.createSaintsBehaviorSectionPage(createBehaviorSectionPageDto));
+    }
+
+    @PutMapping("/saints-behavior/section/pages/publish")
+    public ResponseEntity<Void> publishSaintsBehaviorSectionPage(@RequestBody SaintsBehaviorSectionPublishDto publishDto) {
+        saintsBehaviorService.publishSaintsBehaviorSectionPage(publishDto);
+        return ResponseEntity.ok().build();
     }
 }
