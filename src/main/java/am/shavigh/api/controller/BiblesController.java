@@ -5,6 +5,7 @@ import am.shavigh.api.dto.chapters.BibleBookChapterDto;
 import am.shavigh.api.dto.chapters.BiblesChapterPublishDto;
 import am.shavigh.api.dto.chapters.CreateBibleBookChapterDto;
 import am.shavigh.api.dto.pages.BibleBookChapterPageDto;
+import am.shavigh.api.dto.pages.BibleBookChapterPageMinDataDto;
 import am.shavigh.api.dto.pages.CreateBibleBookChapterPageDto;
 import am.shavigh.api.service.BiblesService;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +52,14 @@ public class BiblesController {
 
     @GetMapping("/bibles/chapters/pages")
     public ResponseEntity<BibleBookChapterPageDto> getBiblesChapterPagesByUrl(@RequestParam("url") String url,
-                                                                              @RequestParam(value = "status", defaultValue = "publish")String status) {
+                                                                              @RequestParam(value = "status", defaultValue = "publish") String status) {
         return ResponseEntity.ok(biblesService.getBiblesChapterPagesByUrl(url, status));
+    }
+
+    @GetMapping("/bibles/chapters/pages/{chapterId}")
+    public ResponseEntity<List<BibleBookChapterPageMinDataDto>> getBiblesChapterPagesByChapterId(@PathVariable("chapterId") Long chapterId,
+                                                                                                 @RequestParam(value = "status", defaultValue = "publish") String status) {
+        return ResponseEntity.ok(biblesService.getBiblesChapterPagesByChapterId(chapterId, status));
     }
 
     @PostMapping("/bibles/chapters/pages")

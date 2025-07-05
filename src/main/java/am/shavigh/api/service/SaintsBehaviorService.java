@@ -74,6 +74,8 @@ public class SaintsBehaviorService {
     public SaintsBehaviourSectionFullDto createSaintsBehaviorSection(CreateSaintsBehaviourSectionDto createDto) {
         return saintsBehaviorRepo.findById(createDto.getSaintsBehaviourId())
                 .map(saintsBehavior -> {
+                    setSectionPagesStatus(createDto);
+
                     var section = new SaintsBehaviorSection();
 
                     if (createDto.getId() != null) {
@@ -102,6 +104,24 @@ public class SaintsBehaviorService {
                 .orElseThrow(() -> new NoSuchElementException("Saints behavior not found with ID: " + createDto.getSaintsBehaviourId()));
     }
 
+    private void setSectionPagesStatus(CreateSaintsBehaviourSectionDto createDto) {
+        var unattachedPagesIds = createDto.getSaintsBehaviourSectionUnattachedPageIds();
+
+        if (unattachedPagesIds != null && !unattachedPagesIds.isEmpty()) {
+            var unattachedPages = saintsBehaviorSectionPageRepo.findByIdIn(unattachedPagesIds);
+            unattachedPages.forEach(page -> page.setAttached(false));
+            saintsBehaviorSectionPageRepo.saveAll(unattachedPages);
+
+            var attachedPages = saintsBehaviorSectionPageRepo.findByIdNotIn(unattachedPagesIds);
+            attachedPages.forEach(page -> page.setAttached(true));
+            saintsBehaviorSectionPageRepo.saveAll(attachedPages);
+        } else {
+            var allPages = saintsBehaviorSectionPageRepo.findAll();
+            allPages.forEach(page -> page.setAttached(true));
+            saintsBehaviorSectionPageRepo.saveAll(allPages);
+        }
+    }
+
     public SaintsBehaviorSectionPageDto createSaintsBehaviorSectionPage(CreateBehaviorSectionPageDto createDto) {
         return saintsBehaviorSectionRepo.findById(createDto.getSaintsBehaviorSectionId())
                 .map(section -> {
@@ -109,6 +129,8 @@ public class SaintsBehaviorService {
 
                     if (createDto.getId() != null) {
                         page.setId(createDto.getId());
+                    } else {
+                        page.setAttached(false);
                     }
 
                     page.setSaintsBehaviorSection(section);

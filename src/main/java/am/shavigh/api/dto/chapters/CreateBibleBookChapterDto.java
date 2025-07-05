@@ -1,5 +1,7 @@
 package am.shavigh.api.dto.chapters;
 
+import java.util.List;
+
 public class CreateBibleBookChapterDto {
 
     private Long id;
@@ -10,8 +12,9 @@ public class CreateBibleBookChapterDto {
     private String nextLink;
     private String prevLink;
     private int bibleBookId;
+    private List<Long> bibleBookChapterUnattachedPageIds;
 
-    public CreateBibleBookChapterDto(Long id,Long originId, String title, String content, String url, String nextLink, String prevLink, int bibleBookId) {
+    public CreateBibleBookChapterDto(Long id, Long originId, String title, String content, String url, String nextLink, String prevLink, int bibleBookId, List<Long> bibleBookChapterUnattachedPageIds) {
         this.id = id;
         this.originId = originId;
         this.title = title;
@@ -20,6 +23,7 @@ public class CreateBibleBookChapterDto {
         this.nextLink = nextLink;
         this.prevLink = prevLink;
         this.bibleBookId = bibleBookId;
+        this.bibleBookChapterUnattachedPageIds = bibleBookChapterUnattachedPageIds;
     }
 
     public CreateBibleBookChapterDto() {}
@@ -88,6 +92,14 @@ public class CreateBibleBookChapterDto {
         this.bibleBookId = bibleBookId;
     }
 
+    public List<Long> getBibleBookChapterUnattachedPageIds() {
+        return bibleBookChapterUnattachedPageIds;
+    }
+
+    public void setBibleBookChapterUnattachedPageIds(List<Long> bibleBookChapterUnattachedPageIds) {
+        this.bibleBookChapterUnattachedPageIds = bibleBookChapterUnattachedPageIds;
+    }
+
     @Override
     public String toString() {
         return "CreateBibleBookChapterDto{" +
@@ -99,6 +111,7 @@ public class CreateBibleBookChapterDto {
                 ", nextLink='" + nextLink + '\'' +
                 ", prevLink='" + prevLink + '\'' +
                 ", bibleBookId=" + bibleBookId +
+                ", bibleBookChapterUnattachedPageIds=" + bibleBookChapterUnattachedPageIds +
                 '}';
     }
 }

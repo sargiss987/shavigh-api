@@ -7,6 +7,7 @@ import am.shavigh.api.dto.bibles.BibleFlatDto;
 import am.shavigh.api.dto.chapters.BiblesChapterPublishDto;
 import am.shavigh.api.dto.chapters.CreateBibleBookChapterDto;
 import am.shavigh.api.dto.pages.BibleBookChapterPageDto;
+import am.shavigh.api.dto.pages.BibleBookChapterPageMinDataDto;
 import am.shavigh.api.dto.pages.CreateBibleBookChapterPageDto;
 import am.shavigh.api.exceptions.ApiException;
 import am.shavigh.api.model.bibles.BibleBookChapterPages;
@@ -103,7 +104,7 @@ public class BiblesService {
     }
 
     public am.shavigh.api.dto.chapters.BibleBookChapterDto getBiblesChapterByUrl(String url, String status) {
-        var response =  biblesRepo.findByUrl(url, status);
+        var response = biblesRepo.findByUrl(url, status);
         if (response == null) {
             throw new ApiException("Bible chapter not found with URL: " + url, HttpStatus.NOT_FOUND);
         }
@@ -121,10 +122,11 @@ public class BiblesService {
         return response;
     }
 
-    public am.shavigh.api.dto.chapters.BibleBookChapterDto createBiblesChapter(CreateBibleBookChapterDto createDto) {
-        System.out.println(createDto);
+    public am.shavigh.api.dto.chapters.BibleBookChapterDto createBiblesChapter(CreateBibleBookChapterDto createDto) {;
         return biblesBookRepo.findById(createDto.getBibleBookId())
                 .map(bibleBook -> {
+                    setChapterPagesAttachedStatus(createDto);
+
                     var chapter = new BibleBookChapters();
                     if (createDto.getId() != null) {
                         chapter.setId(createDto.getId());
@@ -155,12 +157,32 @@ public class BiblesService {
                 .orElseThrow(() -> new NoSuchElementException("Bible book not found with ID: " + createDto.getBibleBookId()));
     }
 
+    private void setChapterPagesAttachedStatus(CreateBibleBookChapterDto createDto) {
+        var unattachedPagesIds = createDto.getBibleBookChapterUnattachedPageIds();
+
+        if (unattachedPagesIds != null && !unattachedPagesIds.isEmpty()) {
+            var unattachedPages = bibleBookChapterPageRepo.findByIdIn(unattachedPagesIds);
+            unattachedPages.forEach(page -> page.setAttached(false));
+            bibleBookChapterPageRepo.saveAll(unattachedPages);
+
+            var attachedPages = bibleBookChapterPageRepo.findByIdNotIn(unattachedPagesIds);
+            attachedPages.forEach(page -> page.setAttached(true));
+            bibleBookChapterPageRepo.saveAll(attachedPages);
+        } else {
+            var allPages = bibleBookChapterPageRepo.findAll();
+            allPages.forEach(page -> page.setAttached(true));
+            bibleBookChapterPageRepo.saveAll(allPages);
+        }
+    }
+
     public BibleBookChapterPageDto createOrUpdateBiblesChapterPage(CreateBibleBookChapterPageDto createBibleBookChapterPageDto) {
         return biblesBookChapterRepo.findById(createBibleBookChapterPageDto.getBibleBookChapterId())
                 .map(chapter -> {
                     var page = new BibleBookChapterPages();
                     if (createBibleBookChapterPageDto.getId() != null) {
                         page.setId(createBibleBookChapterPageDto.getId());
+                    } else {
+                        page.setAttached(false);
                     }
                     page.setTitle(createBibleBookChapterPageDto.getTitle());
                     page.setBibleBookChapters(chapter);
@@ -282,6 +304,18 @@ public class BiblesService {
                         page.getStatus(),
                         page.getOriginId(),
                         page.getBibleBookChapters().getId()))
+                .toList();
+    }
+
+    public List<BibleBookChapterPageMinDataDto> getBiblesChapterPagesByChapterId(Long chapterId, String status) {
+        return bibleBookChapterPageRepo.findByBibleBookChaptersIdAndStatus(chapterId, status)
+                .stream()
+                .map(page -> new BibleBookChapterPageMinDataDto(
+                        page.getId(),
+                        page.getTitle(),
+                        page.getUrl(),
+                        page.getStatus(),
+                        page.getAttached()))
                 .toList();
     }
 }

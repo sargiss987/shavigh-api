@@ -16,6 +16,7 @@ public class SaintsBehaviorSectionPage {
     private String url;
     private String status = "publish";
     private Long originId;
+    private Boolean attached;
 
     @ManyToOne
     @JoinColumn(name = "saints_behavior_section_id", nullable = false)
@@ -26,13 +27,14 @@ public class SaintsBehaviorSectionPage {
     public SaintsBehaviorSectionPage() {
     }
 
-    public SaintsBehaviorSectionPage(Integer id, String title, String content, String url, String status, Long originId, SaintsBehaviorSection saintsBehaviorSection) {
+    public SaintsBehaviorSectionPage(Integer id, String title, String content, String url, String status, Long originId, Boolean attached, SaintsBehaviorSection saintsBehaviorSection) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.url = url;
         this.status = status;
         this.originId = originId;
+        this.attached = attached;
         this.saintsBehaviorSection = saintsBehaviorSection;
     }
 
@@ -91,5 +93,13 @@ public class SaintsBehaviorSectionPage {
 
     public void setOriginId(Long originId) {
         this.originId = originId;
+    }
+
+    public Boolean getAttached() {
+        return attached;
+    }
+
+    public void setAttached(Boolean attached) {
+        this.attached = attached;
     }
 }
