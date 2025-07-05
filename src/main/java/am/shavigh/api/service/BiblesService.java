@@ -192,6 +192,7 @@ public class BiblesService {
                     page.setPrevLink(createBibleBookChapterPageDto.getPrevLink());
                     page.setOriginId(createBibleBookChapterPageDto.getOriginId());
                     page.setStatus("draft");
+                    page.setAttached(createBibleBookChapterPageDto.getAttached());
 
                     var savedPage = bibleBookChapterPageRepo.save(page);
 
@@ -204,7 +205,8 @@ public class BiblesService {
                             savedPage.getPrevLink(),
                             savedPage.getStatus(),
                             savedPage.getOriginId(),
-                            savedPage.getBibleBookChapters().getId()
+                            savedPage.getBibleBookChapters().getId(),
+                            savedPage.getAttached()
                     );
                 })
                 .orElseThrow(() -> new NoSuchElementException("Bible book chapter not found with ID: " + createBibleBookChapterPageDto.getBibleBookChapterId()));
@@ -303,7 +305,8 @@ public class BiblesService {
                         page.getPrevLink(),
                         page.getStatus(),
                         page.getOriginId(),
-                        page.getBibleBookChapters().getId()))
+                        page.getBibleBookChapters().getId(),
+                        page.getAttached()))
                 .toList();
     }
 

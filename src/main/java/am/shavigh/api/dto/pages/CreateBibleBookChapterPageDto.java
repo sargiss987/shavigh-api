@@ -10,8 +10,9 @@ public class CreateBibleBookChapterPageDto {
     private String nextLink;
     private String prevLink;
     private Long bibleBookChapterId;
+    private Boolean attached;
 
-    public CreateBibleBookChapterPageDto(Long id,Long originId, String title, String content, String url, String nextLink, String prevLink, Long bibleBookChapterId) {
+    public CreateBibleBookChapterPageDto(Long id,Long originId, String title, String content, String url, String nextLink, String prevLink, Long bibleBookChapterId, Boolean attached) {
         this.title = title;
         this.content = content;
         this.url = url;
@@ -20,6 +21,7 @@ public class CreateBibleBookChapterPageDto {
         this.id = id;
         this.originId = originId;
         this.bibleBookChapterId = bibleBookChapterId;
+        this.attached = attached;
     }
 
     public CreateBibleBookChapterPageDto() {}
@@ -86,5 +88,13 @@ public class CreateBibleBookChapterPageDto {
 
     public void setBibleBookChapterId(Long bibleBookChapterId) {
         this.bibleBookChapterId = bibleBookChapterId;
+    }
+
+    public Boolean getAttached() {
+        return attached;
+    }
+
+    public void setAttached(Boolean attached) {
+        this.attached = attached;
     }
 }

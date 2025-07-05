@@ -48,7 +48,8 @@ public interface BiblesRepo extends JpaRepository<Bibles, Long> {
                     bcp.prevLink,
                     bcp.status,
                     bcp.originId,
-                    bcp.bibleBookChapters.id
+                    bcp.bibleBookChapters.id,
+                    bcp.attached
                 )
                 FROM BibleBookChapterPages bcp
                 WHERE bcp.url = :url AND bcp.status = :status
