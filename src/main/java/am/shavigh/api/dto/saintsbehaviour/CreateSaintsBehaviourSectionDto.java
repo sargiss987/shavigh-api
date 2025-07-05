@@ -79,4 +79,17 @@ public class CreateSaintsBehaviourSectionDto {
     public void setSaintsBehaviourSectionUnattachedPageIds(List<Long> saintsBehaviourSectionUnattachedPageIds) {
         this.saintsBehaviourSectionUnattachedPageIds = saintsBehaviourSectionUnattachedPageIds;
     }
+
+    @Override
+    public String toString() {
+        return "CreateSaintsBehaviourSectionDto{" +
+                "id=" + id +
+                ", originId=" + originId +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", url='" + url + '\'' +
+                ", saintsBehaviourId=" + saintsBehaviourId +
+                ", saintsBehaviourSectionUnattachedPageIds=" + saintsBehaviourSectionUnattachedPageIds +
+                '}';
+    }
 }

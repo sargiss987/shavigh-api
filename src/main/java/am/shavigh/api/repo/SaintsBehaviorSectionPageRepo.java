@@ -5,6 +5,7 @@ import am.shavigh.api.model.saintsbehavior.SaintsBehaviorSectionPage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Arrays;
 import java.util.List;
 
 public interface SaintsBehaviorSectionPageRepo extends JpaRepository<SaintsBehaviorSectionPage, Long> {
@@ -18,7 +19,8 @@ public interface SaintsBehaviorSectionPageRepo extends JpaRepository<SaintsBehav
                 sbp.url,
                 sbp.status,
                 sbp.originId,
-                sbp.saintsBehaviorSection.id
+                sbp.saintsBehaviorSection.id,
+                sbp.attached
             )
             FROM SaintsBehaviorSectionPage sbp
             WHERE sbp.url = :url AND sbp.status = :status
@@ -28,4 +30,6 @@ public interface SaintsBehaviorSectionPageRepo extends JpaRepository<SaintsBehav
     List<SaintsBehaviorSectionPage> findByIdIn(List<Long> unattachedPagesIds);
 
     List<SaintsBehaviorSectionPage> findByIdNotIn(List<Long> unattachedPagesIds);
+
+    List<SaintsBehaviorSectionPage> findBySaintsBehaviorSectionIdAndStatus(Long sectionId, String status);
 }

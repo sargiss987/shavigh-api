@@ -6,19 +6,21 @@ public class CreateBehaviorSectionPageDto {
     private String title;
     private String content;
     private String url;
-    private Long saintsBehaviorSectionId;
+    private Long sectionId;
+    private Boolean attached;
 
     // Constructors
     public CreateBehaviorSectionPageDto() {
     }
 
-    public CreateBehaviorSectionPageDto(Integer id, Long originId, String title, String content, String url, Long saintsBehaviorSectionId) {
+    public CreateBehaviorSectionPageDto(Integer id, Long originId, String title, String content, String url, Long sectionId, Boolean attached) {
         this.id = id;
         this.originId = originId;
         this.title = title;
         this.content = content;
         this.url = url;
-        this.saintsBehaviorSectionId = saintsBehaviorSectionId;
+        this.sectionId = sectionId;
+        this.attached = attached;
     }
 
     public Integer getId() {
@@ -61,11 +63,32 @@ public class CreateBehaviorSectionPageDto {
         this.url = url;
     }
 
-    public Long getSaintsBehaviorSectionId() {
-        return saintsBehaviorSectionId;
+    public Long getSectionId() {
+        return sectionId;
     }
 
-    public void setSaintsBehaviorSectionId(Long saintsBehaviorSectionId) {
-        this.saintsBehaviorSectionId = saintsBehaviorSectionId;
+    public void setSectionId(Long sectionId) {
+        this.sectionId = sectionId;
+    }
+
+    public Boolean getAttached() {
+        return attached;
+    }
+
+    public void setAttached(Boolean attached) {
+        this.attached = attached;
+    }
+
+    @Override
+    public String toString() {
+        return "CreateBehaviorSectionPageDto{" +
+                "id=" + id +
+                ", originId=" + originId +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", url='" + url + '\'' +
+                ", sectionId=" + sectionId +
+                ", attached=" + attached +
+                '}';
     }
 }

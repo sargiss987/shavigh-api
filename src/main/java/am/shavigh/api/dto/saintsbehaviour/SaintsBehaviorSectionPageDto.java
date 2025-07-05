@@ -8,12 +8,13 @@ public class SaintsBehaviorSectionPageDto {
     private String status = "publish";
     private Long originId;
     private Long sectionId;
+    private Boolean attached;
 
     // Constructors
     public SaintsBehaviorSectionPageDto() {
     }
 
-    public SaintsBehaviorSectionPageDto(Integer id, String title, String content, String url, String status, Long originId, Long sectionId) {
+    public SaintsBehaviorSectionPageDto(Integer id, String title, String content, String url, String status, Long originId, Long sectionId, Boolean attached) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -21,6 +22,7 @@ public class SaintsBehaviorSectionPageDto {
         this.status = status;
         this.originId = originId;
         this.sectionId = sectionId;
+        this.attached = attached;
     }
 
     // Getters and setters
@@ -78,5 +80,13 @@ public class SaintsBehaviorSectionPageDto {
 
     public void setSectionId(Long sectionId) {
         this.sectionId = sectionId;
+    }
+
+    public Boolean getAttached() {
+        return attached;
+    }
+
+    public void setAttached(Boolean attached) {
+        this.attached = attached;
     }
 }

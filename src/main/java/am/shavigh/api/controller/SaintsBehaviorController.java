@@ -17,8 +17,8 @@ public class SaintsBehaviorController {
     }
 
     @GetMapping("/saints-behavior")
-    ResponseEntity<List<SaintsBehaviourDto>> getSaintsBehaviorWithSections(){
-        return ResponseEntity.ok(saintsBehaviorService.getSaintsBehaviorWithSections());
+    ResponseEntity<List<SaintsBehaviourDto>> getSaintsBehaviorWithSections(@RequestParam(value = "status", defaultValue = "publish") String status){
+        return ResponseEntity.ok(saintsBehaviorService.getSaintsBehaviorWithSections(status));
     }
 
     @GetMapping("/saints-behavior/section")
@@ -47,6 +47,13 @@ public class SaintsBehaviorController {
     @PostMapping("/saints-behavior/section/pages")
     ResponseEntity<SaintsBehaviorSectionPageDto> createSaintsBehaviorSectionPage(@RequestBody CreateBehaviorSectionPageDto createBehaviorSectionPageDto) {
         return ResponseEntity.ok(saintsBehaviorService.createSaintsBehaviorSectionPage(createBehaviorSectionPageDto));
+    }
+
+    @GetMapping("/saints-behavior/section/pages/{sectionId}")
+    public ResponseEntity<List<SaintsBehaviorSectionPageMinDataDto>> getSaintsBehaviorSectionPagesBySectionId(
+            @PathVariable("sectionId") Long sectionId,
+            @RequestParam(value = "status", defaultValue = "publish") String status) {
+        return ResponseEntity.ok(saintsBehaviorService.getSaintsBehaviorSectionPagesBySectionId(sectionId, status));
     }
 
     @PutMapping("/saints-behavior/section/pages/publish")

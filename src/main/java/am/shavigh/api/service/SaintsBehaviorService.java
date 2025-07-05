@@ -26,8 +26,8 @@ public class SaintsBehaviorService {
         this.saintsBehaviorSectionRepo = saintsBehaviorSectionRepo;
     }
 
-    public List<SaintsBehaviourDto> getSaintsBehaviorWithSections() {
-        List<SaintsBehaviorFlatDto> flatList = saintsBehaviorRepo.getSaintsBehaviorWithSections();
+    public List<SaintsBehaviourDto> getSaintsBehaviorWithSections(String status) {
+        List<SaintsBehaviorFlatDto> flatList = saintsBehaviorRepo.getSaintsBehaviorWithSections(status);
         return mapToNestedDtos(flatList);
     }
 
@@ -72,6 +72,7 @@ public class SaintsBehaviorService {
     }
 
     public SaintsBehaviourSectionFullDto createSaintsBehaviorSection(CreateSaintsBehaviourSectionDto createDto) {
+        System.out.println(createDto);
         return saintsBehaviorRepo.findById(createDto.getSaintsBehaviourId())
                 .map(saintsBehavior -> {
                     setSectionPagesStatus(createDto);
@@ -123,7 +124,8 @@ public class SaintsBehaviorService {
     }
 
     public SaintsBehaviorSectionPageDto createSaintsBehaviorSectionPage(CreateBehaviorSectionPageDto createDto) {
-        return saintsBehaviorSectionRepo.findById(createDto.getSaintsBehaviorSectionId())
+        System.out.println(createDto);
+        return saintsBehaviorSectionRepo.findById(createDto.getSectionId())
                 .map(section -> {
                     var page = new SaintsBehaviorSectionPage();
 
@@ -139,6 +141,7 @@ public class SaintsBehaviorService {
                     page.setContent(createDto.getContent());
                     page.setUrl(createDto.getUrl());
                     page.setStatus("draft");
+                    page.setAttached(createDto.getAttached());
 
                     var savedPage = saintsBehaviorSectionPageRepo.save(page);
 
@@ -149,10 +152,11 @@ public class SaintsBehaviorService {
                             savedPage.getUrl(),
                             savedPage.getStatus(),
                             savedPage.getOriginId(),
-                            savedPage.getSaintsBehaviorSection().getId()
+                            savedPage.getSaintsBehaviorSection().getId(),
+                            savedPage.getAttached()
                     );
                 })
-                .orElseThrow(() -> new NoSuchElementException("Saints behavior section not found with ID: " + createDto.getSaintsBehaviorSectionId()));
+                .orElseThrow(() -> new NoSuchElementException("Saints behavior section not found with ID: " + createDto.getSectionId()));
     }
 
     @Transactional
@@ -215,4 +219,16 @@ public class SaintsBehaviorService {
                 });
     }
 
+    public List<SaintsBehaviorSectionPageMinDataDto> getSaintsBehaviorSectionPagesBySectionId(Long sectionId, String status) {
+        return saintsBehaviorSectionPageRepo.findBySaintsBehaviorSectionIdAndStatus(sectionId, status)
+                .stream()
+                .map(page -> new SaintsBehaviorSectionPageMinDataDto(
+                        page.getId(),
+                        page.getTitle(),
+                        page.getUrl(),
+                        page.getStatus(),
+                        page.getAttached()
+                ))
+                .toList();
+    }
 }
