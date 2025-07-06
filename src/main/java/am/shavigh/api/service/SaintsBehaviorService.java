@@ -231,4 +231,17 @@ public class SaintsBehaviorService {
                 ))
                 .toList();
     }
+
+    public List<SaintsBehaviorSectionPageMinDataDto> getUnattachedSaintsBehaviorSectionPage() {
+        return saintsBehaviorSectionPageRepo.findByAttachedFalse()
+                .stream()
+                .map(page -> new SaintsBehaviorSectionPageMinDataDto(
+                        page.getId(),
+                        page.getTitle(),
+                        page.getUrl(),
+                        page.getStatus(),
+                        page.getAttached()
+                ))
+                .toList();
+    }
 }

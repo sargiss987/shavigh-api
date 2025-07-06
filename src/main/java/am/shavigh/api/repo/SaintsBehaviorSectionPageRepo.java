@@ -32,4 +32,6 @@ public interface SaintsBehaviorSectionPageRepo extends JpaRepository<SaintsBehav
     List<SaintsBehaviorSectionPage> findByIdNotIn(List<Long> unattachedPagesIds);
 
     List<SaintsBehaviorSectionPage> findBySaintsBehaviorSectionIdAndStatus(Long sectionId, String status);
+
+    List<SaintsBehaviorSectionPage> findByAttachedFalse();
 }

@@ -61,4 +61,9 @@ public class SaintsBehaviorController {
         saintsBehaviorService.publishSaintsBehaviorSectionPage(publishDto);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/saints-behavior/section/pages/unattached")
+    public ResponseEntity<List<SaintsBehaviorSectionPageMinDataDto>> getUnattachedSaintsBehaviorSectionPage() {
+        return ResponseEntity.ok(saintsBehaviorService.getUnattachedSaintsBehaviorSectionPage());
+    }
 }

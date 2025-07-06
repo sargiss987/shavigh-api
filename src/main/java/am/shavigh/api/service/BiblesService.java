@@ -321,4 +321,16 @@ public class BiblesService {
                         page.getAttached()))
                 .toList();
     }
+
+    public List<BibleBookChapterPageMinDataDto> getUnattachedBibleBookChapterPages() {
+        return bibleBookChapterPageRepo.findBibleBookChapterPagesByAttachedFalse()
+                .stream()
+                .map(page -> new BibleBookChapterPageMinDataDto(
+                        page.getId(),
+                        page.getTitle(),
+                        page.getUrl(),
+                        page.getStatus(),
+                        page.getAttached()))
+                .toList();
+    }
 }

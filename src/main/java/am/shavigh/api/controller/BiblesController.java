@@ -77,4 +77,9 @@ public class BiblesController {
     public ResponseEntity<List<BibleBookChapterPageDto>> getDraftBiblesChapterPages() {
         return ResponseEntity.ok(biblesService.findDraftBiblesChapterPages("draft"));
     }
+
+    @GetMapping("/bibles/chapters/pages/unattached")
+    public ResponseEntity<List<BibleBookChapterPageMinDataDto>> getUnattachedBibleBookChapterPages() {
+        return ResponseEntity.ok(biblesService.getUnattachedBibleBookChapterPages());
+    }
 }

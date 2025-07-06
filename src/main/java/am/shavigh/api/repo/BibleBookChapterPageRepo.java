@@ -14,4 +14,6 @@ public interface BibleBookChapterPageRepo extends JpaRepository<BibleBookChapter
     List<BibleBookChapterPages> findByIdNotIn(List<Long> unattachedPagesIds);
 
     List<BibleBookChapterPages> findByBibleBookChaptersIdAndStatus(Long chapterId, String status);
+
+    List<BibleBookChapterPages> findBibleBookChapterPagesByAttachedFalse();
 }
