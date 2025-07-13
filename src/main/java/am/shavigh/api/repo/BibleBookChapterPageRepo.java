@@ -1,9 +1,9 @@
 package am.shavigh.api.repo;
 
 import am.shavigh.api.model.bibles.BibleBookChapterPages;
+import am.shavigh.api.model.bibles.BibleBookChapters;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Arrays;
 import java.util.List;
 
 public interface BibleBookChapterPageRepo extends JpaRepository<BibleBookChapterPages, Long> {
@@ -16,4 +16,7 @@ public interface BibleBookChapterPageRepo extends JpaRepository<BibleBookChapter
     List<BibleBookChapterPages> findByBibleBookChaptersIdAndStatus(Long chapterId, String status);
 
     List<BibleBookChapterPages> findBibleBookChapterPagesByAttachedFalse();
+
+    List<BibleBookChapterPages> findAllByBibleBookChapters(BibleBookChapters bibleBookChapters);
+
 }

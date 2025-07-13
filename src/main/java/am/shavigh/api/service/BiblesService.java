@@ -169,7 +169,12 @@ public class BiblesService {
             attachedPages.forEach(page -> page.setAttached(true));
             bibleBookChapterPageRepo.saveAll(attachedPages);
         } else {
-            var allPages = bibleBookChapterPageRepo.findAll();
+            if (createDto.getId() == null) {
+                return;
+            }
+            var chapter = biblesBookChapterRepo.findById(createDto.getId())
+                    .orElseThrow(() -> new RuntimeException("Chapter not found"));
+            var allPages = bibleBookChapterPageRepo.findAllByBibleBookChapters(chapter);
             allPages.forEach(page -> page.setAttached(true));
             bibleBookChapterPageRepo.saveAll(allPages);
         }
@@ -218,6 +223,18 @@ public class BiblesService {
                 .ifPresentOrElse(chapter -> {
                     if (biblesChapterPublishDto.getOriginId() == null) {
                         // No origin -> publish current chapter
+                        var bibleBook = biblesBookRepo.findById(biblesChapterPublishDto.getBibleBookId())
+                                .orElseThrow(() -> new ApiException("BibleBook not found", HttpStatus.BAD_REQUEST));
+
+                        Optional<BibleBookChapters> prevChapter = biblesBookChapterRepo
+                                .findTopByBibleBooksOrderByIdDesc(bibleBook);
+                        if (prevChapter.isPresent()) {
+                            chapter.setPrevLink("/" + prevChapter.get().getUrl());
+                            prevChapter.get().setNextLink("/" + chapter.getUrl());
+                            biblesBookChapterRepo.save(prevChapter.get());
+                        } else {
+                            chapter.setPrevLink(null);
+                        }
                         chapter.setStatus("publish");
                         biblesBookChapterRepo.save(chapter);
                     } else {

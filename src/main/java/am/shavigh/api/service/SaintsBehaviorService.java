@@ -117,7 +117,7 @@ public class SaintsBehaviorService {
             attachedPages.forEach(page -> page.setAttached(true));
             saintsBehaviorSectionPageRepo.saveAll(attachedPages);
         } else {
-            var allPages = saintsBehaviorSectionPageRepo.findAll();
+            var allPages = saintsBehaviorSectionPageRepo.findAllBySaintsBehaviorSectionId(createDto.getId());
             allPages.forEach(page -> page.setAttached(true));
             saintsBehaviorSectionPageRepo.saveAll(allPages);
         }
