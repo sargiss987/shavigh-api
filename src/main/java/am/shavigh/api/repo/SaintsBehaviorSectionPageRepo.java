@@ -33,6 +33,12 @@ public interface SaintsBehaviorSectionPageRepo extends JpaRepository<SaintsBehav
 
     List<SaintsBehaviorSectionPage> findBySaintsBehaviorSectionIdAndStatus(Long sectionId, String status);
 
+    @Query(value = """
+                SELECT *
+                FROM saints_behavior_section_page
+                WHERE attached = false
+                  AND status = 'publish'
+            """, nativeQuery = true)
     List<SaintsBehaviorSectionPage> findByAttachedFalse();
 
     List<SaintsBehaviorSectionPage> findAllBySaintsBehaviorSectionId(Long id);
@@ -47,4 +53,6 @@ public interface SaintsBehaviorSectionPageRepo extends JpaRepository<SaintsBehav
             @Param("originId") Long originId,
             @Param("attachedPageIds") List<Long> attachedPageIds
     );
+
+    List<SaintsBehaviorSectionPage> findByStatus(String draft);
 }

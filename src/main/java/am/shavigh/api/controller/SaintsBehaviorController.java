@@ -49,6 +49,11 @@ public class SaintsBehaviorController {
         return ResponseEntity.ok(saintsBehaviorService.createSaintsBehaviorSectionPage(createBehaviorSectionPageDto));
     }
 
+    @GetMapping("/saints-behavior/section/pages/draft")
+    ResponseEntity<List<SaintsBehaviorSectionPageDto>> getDraftSaintsBehaviorSectionPage() {
+        return ResponseEntity.ok(saintsBehaviorService.getDraftSaintsBehaviorSectionPage());
+    }
+
     @GetMapping("/saints-behavior/section/pages/{sectionId}")
     public ResponseEntity<List<SaintsBehaviorSectionPageMinDataDto>> getSaintsBehaviorSectionPagesBySectionId(
             @PathVariable("sectionId") Long sectionId,

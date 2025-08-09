@@ -142,8 +142,6 @@ public class SaintsBehaviorService {
 
                     if (createDto.getId() != null) {
                         page.setId(createDto.getId());
-                    } else {
-                        page.setAttached(false);
                     }
 
                     page.setSaintsBehaviorSection(section);
@@ -152,7 +150,7 @@ public class SaintsBehaviorService {
                     page.setContent(createDto.getContent());
                     page.setUrl(createDto.getUrl());
                     page.setStatus("draft");
-                    page.setAttached(createDto.getAttached());
+                    page.setAttached(false);
 
                     var savedPage = saintsBehaviorSectionPageRepo.save(page);
 
@@ -255,5 +253,18 @@ public class SaintsBehaviorService {
                         page.getAttached()
                 ))
                 .toList();
+    }
+
+    public List<SaintsBehaviorSectionPageDto> getDraftSaintsBehaviorSectionPage() {
+        return saintsBehaviorSectionPageRepo.findByStatus("draft").stream()
+                .map(page -> new SaintsBehaviorSectionPageDto(
+                        page.getId(),
+                        page.getTitle(),
+                        page.getContent(),
+                        page.getUrl(),
+                        page.getStatus(),
+                        page.getOriginId(),
+                        page.getSaintsBehaviorSection().getId(),
+                        page.getAttached())).toList();
     }
 }
