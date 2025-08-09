@@ -4,6 +4,7 @@ import am.shavigh.api.dto.saintsbehaviour.SaintsBehaviorSectionPageDto;
 import am.shavigh.api.model.saintsbehavior.SaintsBehaviorSectionPage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -35,4 +36,15 @@ public interface SaintsBehaviorSectionPageRepo extends JpaRepository<SaintsBehav
     List<SaintsBehaviorSectionPage> findByAttachedFalse();
 
     List<SaintsBehaviorSectionPage> findAllBySaintsBehaviorSectionId(Long id);
+
+    @Query(value = """
+                SELECT *
+                FROM saints_behavior_section_page
+                WHERE saints_behavior_section_id = :originId
+                  AND id NOT IN (:attachedPageIds)
+            """, nativeQuery = true)
+    List<SaintsBehaviorSectionPage> findBySectionIdAndIdsNotIn(
+            @Param("originId") Long originId,
+            @Param("attachedPageIds") List<Long> attachedPageIds
+    );
 }

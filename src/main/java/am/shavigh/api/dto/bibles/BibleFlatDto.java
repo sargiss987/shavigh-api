@@ -7,6 +7,7 @@ public record BibleFlatDto(
         String bookTitle,
         int serialNumber,
         String translationName,
+        Integer chapterId,
         String chapterTitle,
         String chapterUrl
 ) {

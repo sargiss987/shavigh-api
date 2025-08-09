@@ -1,7 +1,5 @@
 package am.shavigh.api.dto.saintsbehaviour;
 
-import java.util.List;
-
 public class CreateSaintsBehaviourSectionDto {
 
     private Long id;
@@ -10,18 +8,17 @@ public class CreateSaintsBehaviourSectionDto {
     private String content;
     private String url;
     private Long saintsBehaviourId;
-    private List<Long> saintsBehaviourSectionUnattachedPageIds;
+
 
     public CreateSaintsBehaviourSectionDto() {}
 
-    public CreateSaintsBehaviourSectionDto(Long id, Long originId, String title, String content, String url, Long saintsBehaviourId, List<Long> saintsBehaviourSectionUnattachedPageIds) {
+    public CreateSaintsBehaviourSectionDto(Long id, Long originId, String title, String content, String url, Long saintsBehaviourId) {
         this.id = id;
         this.originId = originId;
         this.title = title;
         this.content = content;
         this.url = url;
         this.saintsBehaviourId = saintsBehaviourId;
-        this.saintsBehaviourSectionUnattachedPageIds = saintsBehaviourSectionUnattachedPageIds;
     }
 
     public Long getId() {
@@ -72,14 +69,6 @@ public class CreateSaintsBehaviourSectionDto {
         this.saintsBehaviourId = saintsBehaviourId;
     }
 
-    public List<Long> getSaintsBehaviourSectionUnattachedPageIds() {
-        return saintsBehaviourSectionUnattachedPageIds;
-    }
-
-    public void setSaintsBehaviourSectionUnattachedPageIds(List<Long> saintsBehaviourSectionUnattachedPageIds) {
-        this.saintsBehaviourSectionUnattachedPageIds = saintsBehaviourSectionUnattachedPageIds;
-    }
-
     @Override
     public String toString() {
         return "CreateSaintsBehaviourSectionDto{" +
@@ -89,7 +78,6 @@ public class CreateSaintsBehaviourSectionDto {
                 ", content='" + content + '\'' +
                 ", url='" + url + '\'' +
                 ", saintsBehaviourId=" + saintsBehaviourId +
-                ", saintsBehaviourSectionUnattachedPageIds=" + saintsBehaviourSectionUnattachedPageIds +
                 '}';
     }
 }

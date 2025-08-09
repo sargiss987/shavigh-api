@@ -1,18 +1,23 @@
 package am.shavigh.api.dto.chapters;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BiblesChapterPublishDto {
 
     private Long id;
     private Long originId;
     private Long bibleBookId;
+    private List<Long> bibleBookChapterAttachedPageIds = new ArrayList<>();
 
     public BiblesChapterPublishDto() {
     }
 
-    public BiblesChapterPublishDto(Long id, Long originId, Long bibleBookId) {
+    public BiblesChapterPublishDto(Long id, Long originId, Long bibleBookId, List<Long> bibleBookChapterAttachedPageIds) {
         this.id = id;
         this.originId = originId;
         this.bibleBookId = bibleBookId;
+        this.bibleBookChapterAttachedPageIds = bibleBookChapterAttachedPageIds;
     }
 
     public Long getId() {
@@ -45,5 +50,13 @@ public class BiblesChapterPublishDto {
                 "id=" + id +
                 ", originId=" + originId +
                 '}';
+    }
+
+    public List<Long> getBibleBookChapterAttachedPageIds() {
+        return bibleBookChapterAttachedPageIds;
+    }
+
+    public void setBibleBookChapterAttachedPageIds(List<Long> bibleBookChapterAttachedPageIds) {
+        this.bibleBookChapterAttachedPageIds = bibleBookChapterAttachedPageIds;
     }
 }

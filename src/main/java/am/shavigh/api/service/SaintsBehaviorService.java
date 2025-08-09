@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class SaintsBehaviorService {
@@ -75,7 +77,6 @@ public class SaintsBehaviorService {
         System.out.println(createDto);
         return saintsBehaviorRepo.findById(createDto.getSaintsBehaviourId())
                 .map(saintsBehavior -> {
-                    setSectionPagesStatus(createDto);
 
                     var section = new SaintsBehaviorSection();
 
@@ -105,20 +106,30 @@ public class SaintsBehaviorService {
                 .orElseThrow(() -> new NoSuchElementException("Saints behavior not found with ID: " + createDto.getSaintsBehaviourId()));
     }
 
-    private void setSectionPagesStatus(CreateSaintsBehaviourSectionDto createDto) {
-        var unattachedPagesIds = createDto.getSaintsBehaviourSectionUnattachedPageIds();
+    private void setSectionPagesStatus(SaintsBehaviorSectionPublishDto publishDto) {
+        var attachedPageIds = publishDto.getSaintsBehaviourSectionAttachedPageIds();
 
-        if (unattachedPagesIds != null && !unattachedPagesIds.isEmpty()) {
-            var unattachedPages = saintsBehaviorSectionPageRepo.findByIdIn(unattachedPagesIds);
-            unattachedPages.forEach(page -> page.setAttached(false));
-            saintsBehaviorSectionPageRepo.saveAll(unattachedPages);
+        if (attachedPageIds != null && !attachedPageIds.isEmpty()) {
+            // Fetch attached pages and index by id
+            var attachedPages = saintsBehaviorSectionPageRepo.findByIdIn(attachedPageIds);
 
-            var attachedPages = saintsBehaviorSectionPageRepo.findByIdNotIn(unattachedPagesIds);
-            attachedPages.forEach(page -> page.setAttached(true));
+            // Mark attached = true
+            attachedPages.forEach(p -> p.setAttached(true));
+
+
             saintsBehaviorSectionPageRepo.saveAll(attachedPages);
+
+            // Detach the rest in this section
+            var unattached = saintsBehaviorSectionPageRepo
+                    .findBySectionIdAndIdsNotIn(publishDto.getOriginId(), attachedPageIds); // <- use getId() if that's your field
+            unattached.forEach(p -> p.setAttached(false));
+            saintsBehaviorSectionPageRepo.saveAll(unattached);
+
         } else {
-            var allPages = saintsBehaviorSectionPageRepo.findAllBySaintsBehaviorSectionId(createDto.getId());
-            allPages.forEach(page -> page.setAttached(true));
+            // No attached IDs -> mark all pages in the section as unattached
+            var allPages = saintsBehaviorSectionPageRepo
+                    .findAllBySaintsBehaviorSectionId(publishDto.getOriginId()); // <- swap to getId() if needed
+            allPages.forEach(p -> p.setAttached(false));
             saintsBehaviorSectionPageRepo.saveAll(allPages);
         }
     }
@@ -177,7 +188,8 @@ public class SaintsBehaviorService {
                                     original.setContent(section.getContent());
                                     original.setUrl(section.getUrl());
                                     saintsBehaviorSectionRepo.save(original);
-
+                                    // Set the status of section pages
+                                    setSectionPagesStatus(publishDto);
                                     // Delete the draft section
                                     saintsBehaviorSectionRepo.delete(section);
                                 }, () -> {

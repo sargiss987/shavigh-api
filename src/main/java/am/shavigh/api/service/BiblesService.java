@@ -21,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class BiblesService {
@@ -52,7 +54,7 @@ public class BiblesService {
                     name -> new BibleDto(name, flat.bibleUniqueName()));
 
             var book = findOrCreateBook(bible, flat);
-            book.getChapters().add(new BibleBookChapterDto(flat.chapterTitle(), flat.chapterUrl()));
+            book.getChapters().add(new BibleBookChapterDto(flat.chapterId(), flat.chapterTitle(), flat.chapterUrl()));
         }
 
         return bibleMap;
@@ -122,11 +124,10 @@ public class BiblesService {
         return response;
     }
 
-    public am.shavigh.api.dto.chapters.BibleBookChapterDto createBiblesChapter(CreateBibleBookChapterDto createDto) {;
+    public am.shavigh.api.dto.chapters.BibleBookChapterDto createBiblesChapter(CreateBibleBookChapterDto createDto) {
+
         return biblesBookRepo.findById(createDto.getBibleBookId())
                 .map(bibleBook -> {
-                    setChapterPagesAttachedStatus(createDto);
-
                     var chapter = new BibleBookChapters();
                     if (createDto.getId() != null) {
                         chapter.setId(createDto.getId());
@@ -157,28 +158,47 @@ public class BiblesService {
                 .orElseThrow(() -> new NoSuchElementException("Bible book not found with ID: " + createDto.getBibleBookId()));
     }
 
-    private void setChapterPagesAttachedStatus(CreateBibleBookChapterDto createDto) {
-        var unattachedPagesIds = createDto.getBibleBookChapterUnattachedPageIds();
+    private void setChapterPagesAttachedStatus(BiblesChapterPublishDto chapterPublishDto) {
+        var attachedPagesIds = chapterPublishDto.getBibleBookChapterAttachedPageIds();
 
-        if (unattachedPagesIds != null && !unattachedPagesIds.isEmpty()) {
-            var unattachedPages = bibleBookChapterPageRepo.findByIdIn(unattachedPagesIds);
+        if (attachedPagesIds != null && !attachedPagesIds.isEmpty()) {
+            // Fetch and mark attached pages
+            var attachedPages = bibleBookChapterPageRepo.findByIdIn(attachedPagesIds);
+            var pageMap = attachedPages.stream().collect(Collectors.toMap(BibleBookChapterPages::getId, Function.identity()));
+
+            // Set attached = true
+            attachedPages.forEach(p -> p.setAttached(true));
+
+            // Set prev/next based on the ordering of IDs
+            for (int i = 0; i < attachedPagesIds.size(); i++) {
+                Long currentId = attachedPagesIds.get(i);
+                BibleBookChapterPages currentPage = pageMap.get(currentId);
+
+                String prevUrl = (i > 0) ? "/" + pageMap.get(attachedPagesIds.get(i - 1)).getUrl() : null;
+                String nextUrl = (i < attachedPagesIds.size() - 1) ? "/" + pageMap.get(attachedPagesIds.get(i + 1)).getUrl() : null;
+
+                currentPage.setPrevLink(prevUrl);
+                currentPage.setNextLink(nextUrl);
+            }
+
+            bibleBookChapterPageRepo.saveAll(attachedPages);
+
+            // Set other pages as unattached (false)
+            var unattachedPages = bibleBookChapterPageRepo.findByChapterIdAndIdsNotIn(chapterPublishDto.getOriginId(), attachedPagesIds);
             unattachedPages.forEach(page -> page.setAttached(false));
             bibleBookChapterPageRepo.saveAll(unattachedPages);
 
-            var attachedPages = bibleBookChapterPageRepo.findByIdNotIn(unattachedPagesIds);
-            attachedPages.forEach(page -> page.setAttached(true));
-            bibleBookChapterPageRepo.saveAll(attachedPages);
         } else {
-            if (createDto.getId() == null) {
-                return;
-            }
-            var chapter = biblesBookChapterRepo.findById(createDto.getId())
+
+            var chapter = biblesBookChapterRepo.findById(chapterPublishDto.getOriginId())
                     .orElseThrow(() -> new RuntimeException("Chapter not found"));
+
             var allPages = bibleBookChapterPageRepo.findAllByBibleBookChapters(chapter);
-            allPages.forEach(page -> page.setAttached(true));
+            allPages.forEach(page -> page.setAttached(false));
             bibleBookChapterPageRepo.saveAll(allPages);
         }
     }
+
 
     public BibleBookChapterPageDto createOrUpdateBiblesChapterPage(CreateBibleBookChapterPageDto createBibleBookChapterPageDto) {
         return biblesBookChapterRepo.findById(createBibleBookChapterPageDto.getBibleBookChapterId())
@@ -186,8 +206,6 @@ public class BiblesService {
                     var page = new BibleBookChapterPages();
                     if (createBibleBookChapterPageDto.getId() != null) {
                         page.setId(createBibleBookChapterPageDto.getId());
-                    } else {
-                        page.setAttached(false);
                     }
                     page.setTitle(createBibleBookChapterPageDto.getTitle());
                     page.setBibleBookChapters(chapter);
@@ -196,8 +214,8 @@ public class BiblesService {
                     page.setNextLink(createBibleBookChapterPageDto.getNextLink());
                     page.setPrevLink(createBibleBookChapterPageDto.getPrevLink());
                     page.setOriginId(createBibleBookChapterPageDto.getOriginId());
+                    page.setAttached(false);
                     page.setStatus("draft");
-                    page.setAttached(createBibleBookChapterPageDto.getAttached());
 
                     var savedPage = bibleBookChapterPageRepo.save(page);
 
@@ -249,7 +267,8 @@ public class BiblesService {
                                     original.setNextLink(chapter.getNextLink());
                                     original.setPrevLink(chapter.getPrevLink());
                                     biblesBookChapterRepo.save(original);
-
+                                    // Attach pages if any
+                                    setChapterPagesAttachedStatus(biblesChapterPublishDto);
                                     // Delete the draft chapter
                                     biblesBookChapterRepo.delete(chapter);
                                 }, () -> {
@@ -340,7 +359,7 @@ public class BiblesService {
     }
 
     public List<BibleBookChapterPageMinDataDto> getUnattachedBibleBookChapterPages() {
-        return bibleBookChapterPageRepo.findBibleBookChapterPagesByAttachedFalse()
+        return bibleBookChapterPageRepo.findBibleBookChapterPagesByAttachedFalseAndStatusPublish()
                 .stream()
                 .map(page -> new BibleBookChapterPageMinDataDto(
                         page.getId(),

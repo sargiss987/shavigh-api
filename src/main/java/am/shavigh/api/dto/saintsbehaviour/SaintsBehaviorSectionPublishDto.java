@@ -1,14 +1,19 @@
 package am.shavigh.api.dto.saintsbehaviour;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SaintsBehaviorSectionPublishDto {
     private Long id;
     private Long originId;
+    private List<Long> saintsBehaviourSectionAttachedPageIds = new ArrayList<>();
 
     public SaintsBehaviorSectionPublishDto() {}
 
-    public SaintsBehaviorSectionPublishDto(Long id, Long originId) {
+    public SaintsBehaviorSectionPublishDto(Long id, Long originId, List<Long> saintsBehaviourSectionAttachedPageIds) {
         this.id = id;
         this.originId = originId;
+        this.saintsBehaviourSectionAttachedPageIds = saintsBehaviourSectionAttachedPageIds;
     }
 
     public Long getId() {
@@ -25,5 +30,13 @@ public class SaintsBehaviorSectionPublishDto {
 
     public void setOriginId(Long originId) {
         this.originId = originId;
+    }
+
+    public List<Long> getSaintsBehaviourSectionAttachedPageIds() {
+        return saintsBehaviourSectionAttachedPageIds;
+    }
+
+    public void setSaintsBehaviourSectionAttachedPageIds(List<Long> saintsBehaviourSectionAttachedPageIds) {
+        this.saintsBehaviourSectionAttachedPageIds = saintsBehaviourSectionAttachedPageIds;
     }
 }
